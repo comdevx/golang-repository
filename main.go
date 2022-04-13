@@ -2,6 +2,7 @@ package main
 
 import (
 	"bank/handler"
+	"bank/logs"
 	"bank/repository"
 	"bank/service"
 	"context"
@@ -17,11 +18,11 @@ func main() {
 	initTimeZone()
 	db := initDatabase()
 
-	customerRepository := repository.NewCustomerRepositoryDB((*mongo.Database)(db))
+	customerRepository := repository.NewCustomerRepositoryDB(db)
 	customerRepositoryMock := repository.NewCustomerRepositoryMock()
-	_ = customerRepository
+	_ = customerRepositoryMock
 
-	customerService := service.NewCustomerService(customerRepositoryMock)
+	customerService := service.NewCustomerService(customerRepository)
 	customerHandler := handler.NewCustomerHandler(customerService)
 
 	router := gin.Default()
@@ -29,6 +30,7 @@ func main() {
 	router.GET("/customers", customerHandler.GetCustomers)
 	router.GET("/customers/:customer_id", customerHandler.GetCustomer)
 
+	logs.Info("Started port 3000")
 	router.Run(":3000")
 
 }
@@ -45,15 +47,14 @@ func initTimeZone() {
 
 func initDatabase() *mongo.Database {
 
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-	defer cancel()
+	ctx := context.Background()
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb+srv://tongtest:tongtestgolang@cluster0.yc2a7.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"))
+	if err != nil {
+		logs.Error(err)
+		panic(err)
+	}
 
-	defer func() {
-		if err = client.Disconnect(ctx); err != nil {
-			panic(err)
-		}
-	}()
+	logs.Info("Mongo is connected")
 
 	db := client.Database("golang")
 

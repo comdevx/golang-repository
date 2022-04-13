@@ -14,12 +14,14 @@ type customerRepositoryDB struct {
 
 func NewCustomerRepositoryDB(db *mongo.Database) customerRepositoryDB {
 	collection := db.Collection("customers")
-	return customerRepositoryDB{collection: collection}
+	return customerRepositoryDB{
+		collection: collection,
+	}
 }
 
-func (r customerRepositoryDB) GetAll() ([]*Customer, error) {
+func (r customerRepositoryDB) GetAll() ([]Customer, error) {
 
-	var result []*Customer
+	var result []Customer
 	ctx := context.Background()
 	cursor, err := r.collection.Find(ctx, bson.M{})
 	if err != nil {
@@ -32,7 +34,7 @@ func (r customerRepositoryDB) GetAll() ([]*Customer, error) {
 		return nil, err
 	}
 
-	return result, cursor.Err()
+	return result, nil
 }
 
 func (r customerRepositoryDB) GetByID(id string) (*Customer, error) {
