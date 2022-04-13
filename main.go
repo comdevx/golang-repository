@@ -18,17 +18,18 @@ func main() {
 	initTimeZone()
 	db := initDatabase()
 
-	customerRepository := repository.NewCustomerRepositoryDB(db)
-	customerRepositoryMock := repository.NewCustomerRepositoryMock()
-	_ = customerRepositoryMock
+	userRepository := repository.NewUserRepositoryDB(db)
+	userRepositoryMock := repository.NewUserRepositoryMock()
+	_ = userRepositoryMock
 
-	customerService := service.NewCustomerService(customerRepository)
-	customerHandler := handler.NewCustomerHandler(customerService)
+	userService := service.NewUserService(userRepository)
+	userHandler := handler.NewUserHandler(userService)
 
 	router := gin.Default()
 
-	router.GET("/customers", customerHandler.GetCustomers)
-	router.GET("/customers/:customer_id", customerHandler.GetCustomer)
+	router.GET("/users", userHandler.GetUsers)
+	router.GET("/users/:user_id", userHandler.GetUser)
+	router.POST("/users", userHandler.NewUser)
 
 	logs.Info("Started port 3000")
 	router.Run(":3000")

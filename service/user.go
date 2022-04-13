@@ -2,19 +2,32 @@ package service
 
 import "go.mongodb.org/mongo-driver/bson/primitive"
 
-type UserResponse struct {
-	UserID   primitive.ObjectID `json:"id"`
-	Username string             `json:"username"`
-	Password string             `json:"password"`
+type NewUserRequest struct {
+	UserID    primitive.ObjectID `json:"id"`
+	Username  string             `json:"username"`
+	Password  string             `json:"password"`
+	Verified  bool               `json:"verified"`
+	Suspended bool               `json:"suspended"`
+	Profile   Profile
 }
 
-type NewUserRequest struct {
-	UserID   primitive.ObjectID `json:"id"`
-	Username string             `json:"username"`
-	Password string             `json:"password"`
+type UserResponse struct {
+	UserID    primitive.ObjectID `json:"id"`
+	Username  string             `json:"username"`
+	Password  string             `json:"password"`
+	Verified  bool               `json:"verified"`
+	Suspended bool               `json:"suspended"`
+	Profile   Profile
+}
+
+type Profile struct {
+	Firstname string `json:"firstname"`
+	Lastname  string `json:"lastname"`
+	Age       string `json:"age"`
 }
 
 type UserService interface {
-	GetCustomers() ([]UserResponse, error)
-	NewUser()
+	GetUsers() ([]UserResponse, error)
+	GetUser(id string) (*UserResponse, error)
+	NewUser(NewUserRequest) (*UserResponse, error)
 }

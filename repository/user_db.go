@@ -14,7 +14,9 @@ type userRepositoryDB struct {
 
 func NewUserRepositoryDB(db *mongo.Database) userRepositoryDB {
 	collection := db.Collection("users")
-	return userRepositoryDB{collection: collection}
+	return userRepositoryDB{
+		collection: collection,
+	}
 }
 
 func (r userRepositoryDB) GetAll() ([]User, error) {
@@ -26,6 +28,8 @@ func (r userRepositoryDB) GetAll() ([]User, error) {
 		return nil, err
 	}
 
+	defer cursor.Close(ctx)
+
 	if err := cursor.All(ctx, &result); err != nil {
 		return nil, err
 	}
@@ -33,9 +37,21 @@ func (r userRepositoryDB) GetAll() ([]User, error) {
 	return result, nil
 }
 
+func (r userRepositoryDB) GetByID(id string) (*User, error) {
+
+	var result User
+	ctx := context.Background()
+	ConvID, _ := primitive.ObjectIDFromHex(id)
+	err := r.collection.FindOne(ctx, bson.M{"_id": ConvID}).Decode(&result)
+	if err != nil {
+		return nil, err
+	}
+
+	return &result, nil
+}
+
 func (r userRepositoryDB) Create(user User) (*User, error) {
 
-	user.UserID = primitive.NewObjectID()
 	ctx := context.Background()
 	_, err := r.collection.InsertOne(ctx, user)
 	if err != nil {
