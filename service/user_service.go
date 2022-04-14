@@ -4,6 +4,7 @@ import (
 	"bank/errs"
 	"bank/logs"
 	"bank/repository"
+	"unsafe"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -46,14 +47,9 @@ func (s userService) GetUser(id string) (*UserResponse, error) {
 		return nil, errs.NewNotFoundError("user not found")
 	}
 
-	UserResponse := UserResponse{
-		UserID:   user.UserID,
-		Username: user.Username,
-		Password: user.Password,
-		Profile:  Profile(user.Profile),
-	}
+	UserResponse := (*UserResponse)(unsafe.Pointer(user))
 
-	return &UserResponse, nil
+	return UserResponse, nil
 }
 
 func (s userService) NewUser(body NewUserRequest) (*UserResponse, error) {
@@ -70,12 +66,7 @@ func (s userService) NewUser(body NewUserRequest) (*UserResponse, error) {
 		return nil, errs.NewServerError()
 	}
 
-	UserResponse := UserResponse{
-		UserID:   newUser.UserID,
-		Username: newUser.Username,
-		Password: newUser.Password,
-		Profile:  Profile(newUser.Profile),
-	}
+	UserResponse := (*UserResponse)(unsafe.Pointer(newUser))
 
-	return &UserResponse, nil
+	return UserResponse, nil
 }
