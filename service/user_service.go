@@ -54,6 +54,14 @@ func (s userService) GetUser(id string) (*UserResponse, error) {
 
 func (s userService) NewUser(body NewUserRequest) (*UserResponse, error) {
 
+	if len(body.Username) < 4 {
+		return nil, errs.NewValidationError("character at least 4")
+	}
+
+	if len(body.Password) < 6 {
+		return nil, errs.NewValidationError("character at least 6")
+	}
+
 	user := repository.User{
 		UserID:   primitive.NewObjectID(),
 		Username: body.Username,

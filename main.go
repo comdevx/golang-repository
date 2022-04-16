@@ -21,7 +21,6 @@ func main() {
 	userRepository := repository.NewUserRepositoryDB(db)
 	userRepositoryMock := repository.NewUserRepositoryMock()
 	_ = userRepositoryMock
-
 	userService := service.NewUserService(userRepository)
 	userHandler := handler.NewUserHandler(userService)
 
@@ -33,7 +32,6 @@ func main() {
 
 	logs.Info("Started port 3000")
 	router.Run(":3000")
-
 }
 
 func initTimeZone() {

@@ -1,6 +1,8 @@
 package errs
 
-import "net/http"
+import (
+	"net/http"
+)
 
 type AppError struct {
 	Code    int
@@ -22,5 +24,12 @@ func NewServerError() error {
 	return AppError{
 		Code:    http.StatusInternalServerError,
 		Message: "unexpected error",
+	}
+}
+
+func NewValidationError(message string) error {
+	return AppError{
+		Code:    http.StatusUnprocessableEntity,
+		Message: message,
 	}
 }
