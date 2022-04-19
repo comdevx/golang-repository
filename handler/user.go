@@ -1,17 +1,17 @@
 package handler
 
 import (
-	"bank/service"
+	process "bank/process"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
 )
 
 type userHandler struct {
-	custSer service.UserService
+	custSer process.UserProcess
 }
 
-func NewUserHandler(custSer service.UserService) userHandler {
+func NewUserHandler(custSer process.UserProcess) userHandler {
 	return userHandler{custSer: custSer}
 }
 
@@ -40,7 +40,7 @@ func (h userHandler) GetUser(c *gin.Context) {
 
 func (h userHandler) NewUser(c *gin.Context) {
 
-	user := service.NewUserRequest{}
+	user := process.NewUserRequest{}
 
 	if err := c.Bind(&user); err != nil {
 		handleError(c, err)

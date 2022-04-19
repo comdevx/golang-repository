@@ -1,4 +1,4 @@
-package service
+package process
 
 import "go.mongodb.org/mongo-driver/bson/primitive"
 
@@ -26,7 +26,7 @@ type Profile struct {
 	Age       string `json:"age"`
 }
 
-type UserService interface {
+type UserProcess interface {
 	GetUsers() ([]UserResponse, error)
 	GetUser(id string) (*UserResponse, error)
 	NewUser(NewUserRequest) (*UserResponse, error)

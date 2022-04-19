@@ -3,8 +3,8 @@ package main
 import (
 	"bank/handler"
 	"bank/logs"
+	"bank/process"
 	"bank/repository"
-	"bank/service"
 	"context"
 	"time"
 
@@ -21,8 +21,8 @@ func main() {
 	userRepository := repository.NewUserRepositoryDB(db)
 	userRepositoryMock := repository.NewUserRepositoryMock()
 	_ = userRepositoryMock
-	userService := service.NewUserService(userRepository)
-	userHandler := handler.NewUserHandler(userService)
+	userProcess := process.NewUserProcess(userRepository)
+	userHandler := handler.NewUserHandler(userProcess)
 
 	router := gin.Default()
 
@@ -53,7 +53,7 @@ func initDatabase() *mongo.Database {
 		panic(err)
 	}
 
-	logs.Info("Mongo is connected")
+	logs.Info("Database is connected")
 
 	db := client.Database("golang")
 

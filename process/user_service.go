@@ -1,4 +1,4 @@
-package service
+package process
 
 import (
 	"bank/errs"
@@ -9,15 +9,15 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
-type userService struct {
+type userProcess struct {
 	custRepo repository.UserRepository
 }
 
-func NewUserService(custRepo repository.UserRepository) userService {
-	return userService{custRepo: custRepo}
+func NewUserProcess(custRepo repository.UserRepository) userProcess {
+	return userProcess{custRepo: custRepo}
 }
 
-func (s userService) GetUsers() ([]UserResponse, error) {
+func (s userProcess) GetUsers() ([]UserResponse, error) {
 
 	users, err := s.custRepo.GetAll()
 	if err != nil {
@@ -39,7 +39,7 @@ func (s userService) GetUsers() ([]UserResponse, error) {
 	return custResponses, nil
 }
 
-func (s userService) GetUser(id string) (*UserResponse, error) {
+func (s userProcess) GetUser(id string) (*UserResponse, error) {
 
 	user, err := s.custRepo.GetByID(id)
 	if err != nil {
@@ -52,7 +52,7 @@ func (s userService) GetUser(id string) (*UserResponse, error) {
 	return UserResponse, nil
 }
 
-func (s userService) NewUser(body NewUserRequest) (*UserResponse, error) {
+func (s userProcess) NewUser(body NewUserRequest) (*UserResponse, error) {
 
 	if len(body.Username) < 4 {
 		return nil, errs.NewValidationError("character at least 4")
