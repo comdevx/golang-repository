@@ -1,47 +1,47 @@
 package process
 
 import (
-	"bank/errs"
-	"bank/logs"
-	"bank/repository"
+	logs "project/helper"
+	errs "project/helper/errs"
+	"project/repository"
 	"unsafe"
 
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type userProcess struct {
-	custRepo repository.UserRepository
+	userRepo repository.UserRepository
 }
 
-func NewUserProcess(custRepo repository.UserRepository) userProcess {
-	return userProcess{custRepo: custRepo}
+func NewUserProcess(userRepo repository.UserRepository) userProcess {
+	return userProcess{userRepo: userRepo}
 }
 
 func (s userProcess) GetUsers() ([]UserResponse, error) {
 
-	users, err := s.custRepo.GetAll()
+	users, err := s.userRepo.GetAll()
 	if err != nil {
 		logs.Error(err)
 		return nil, errs.NewNotFoundError("user not found")
 	}
 
-	custResponses := []UserResponse{}
+	userResponses := []UserResponse{}
 	for _, user := range users {
-		custResponse := UserResponse{
+		userResponse := UserResponse{
 			UserID:   user.UserID,
 			Username: user.Username,
 			Password: user.Password,
 			Profile:  Profile(user.Profile),
 		}
-		custResponses = append(custResponses, custResponse)
+		userResponses = append(userResponses, userResponse)
 	}
 
-	return custResponses, nil
+	return userResponses, nil
 }
 
 func (s userProcess) GetUser(id string) (*UserResponse, error) {
 
-	user, err := s.custRepo.GetByID(id)
+	user, err := s.userRepo.GetByID(id)
 	if err != nil {
 		logs.Error(err)
 		return nil, errs.NewNotFoundError("user not found")
@@ -68,7 +68,7 @@ func (s userProcess) NewUser(body NewUserRequest) (*UserResponse, error) {
 		Password: body.Password,
 	}
 
-	newUser, err := s.custRepo.Create(user)
+	newUser, err := s.userRepo.Create(user)
 	if err != nil {
 		logs.Error(err)
 		return nil, errs.NewServerError()

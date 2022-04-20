@@ -20,11 +20,11 @@ func NewUserRepositoryMock() userRepositoryMock {
 	return userRepositoryMock{users: users}
 }
 
-func (r userRepositoryMock) GetAll() ([]User, error) {
+func (r *userRepositoryMock) GetAll() ([]User, error) {
 	return r.users, nil
 }
 
-func (r userRepositoryMock) GetByID(id string) (*User, error) {
+func (r *userRepositoryMock) GetByID(id string) (*User, error) {
 
 	convID, _ := primitive.ObjectIDFromHex(id)
 	for _, user := range r.users {
@@ -36,7 +36,7 @@ func (r userRepositoryMock) GetByID(id string) (*User, error) {
 	return nil, errors.New("user not found")
 }
 
-func (r userRepositoryMock) Create(user User) (*User, error) {
+func (r *userRepositoryMock) Create(user User) (*User, error) {
 
 	user.UserID = primitive.NewObjectID()
 

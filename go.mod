@@ -1,4 +1,4 @@
-module bank
+module project
 
 go 1.17
 

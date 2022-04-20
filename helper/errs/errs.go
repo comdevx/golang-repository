@@ -1,4 +1,4 @@
-package errs
+package helper
 
 import (
 	"net/http"
