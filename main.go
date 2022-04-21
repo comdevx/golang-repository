@@ -4,8 +4,8 @@ import (
 	"context"
 	"project/controller"
 	logs "project/helper"
-	"project/process"
 	"project/repository"
+	"project/service"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -21,14 +21,14 @@ func main() {
 	userRepository := repository.NewUserRepositoryDB(db)
 	userRepositoryMock := repository.NewUserRepositoryMock()
 	_ = userRepositoryMock
-	userProcess := process.NewUserProcess(userRepository)
-	userController := controller.NewUserController(userProcess)
+	userService := service.NewUserService(userRepository)
+	userController := controller.NewUserController(userService)
 
 	router := gin.Default()
 
 	router.GET("/users", userController.GetUsers)
 	router.GET("/users/:user_id", userController.GetUser)
-	router.POST("/users", userController.NewUser)
+	// router.POST("/users", userController.NewUser)
 
 	logs.Info("Started port 3000")
 	router.Run(":3000")

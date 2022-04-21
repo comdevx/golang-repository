@@ -1,4 +1,4 @@
-package helper
+package service
 
 import (
 	"net/http"
@@ -13,21 +13,21 @@ func (e AppError) Error() string {
 	return e.Message
 }
 
-func NewNotFoundError(message string) error {
+func errNotFoundError(message string) error {
 	return AppError{
 		Code:    http.StatusNotFound,
 		Message: message,
 	}
 }
 
-func NewServerError() error {
+func errServerError() error {
 	return AppError{
 		Code:    http.StatusInternalServerError,
 		Message: "unexpected error",
 	}
 }
 
-func NewValidationError(message string) error {
+func errValidationError(message string) error {
 	return AppError{
 		Code:    http.StatusUnprocessableEntity,
 		Message: message,

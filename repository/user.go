@@ -10,13 +10,6 @@ type User struct {
 	Password  string             `json:"password"`
 	Verified  bool               `json:"verified"`
 	Suspended bool               `json:"suspended"`
-	Profile   Profile
-}
-
-type Profile struct {
-	Firstname string `json:"firstname"`
-	Lastname  string `json:"lastname"`
-	Age       string `json:"age"`
 }
 
 type UserRepository interface {

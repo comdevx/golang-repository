@@ -2,25 +2,24 @@ package controller
 
 import (
 	"net/http"
-	errs "project/helper/errs"
-	process "project/process"
+	service "project/service"
 
 	"github.com/gin-gonic/gin"
 )
 
 type userController struct {
-	userCon process.UserProcess
+	userService service.UserService
 }
 
-func NewUserController(userCon process.UserProcess) userController {
-	return userController{userCon: userCon}
+func NewUserController(userService service.UserService) userController {
+	return userController{userService: userService}
 }
 
 func (h userController) GetUsers(c *gin.Context) {
 
-	users, err := h.userCon.GetUsers()
+	users, err := h.userService.GetUsers()
 	if err != nil {
-		errs.HandleError(c, err)
+		handleError(c, err)
 		return
 	}
 
@@ -30,29 +29,30 @@ func (h userController) GetUsers(c *gin.Context) {
 func (h userController) GetUser(c *gin.Context) {
 
 	id := c.Param("user_id")
-	users, err := h.userCon.GetUser(id)
+
+	users, err := h.userService.GetUser(id)
 	if err != nil {
-		errs.HandleError(c, err)
+		handleError(c, err)
 		return
 	}
 
 	c.JSON(http.StatusOK, users)
 }
 
-func (h userController) NewUser(c *gin.Context) {
+// func (h userController) NewUser(c *gin.Context) {
 
-	user := process.NewUserRequest{}
+// 	user := service.NewUserRequest{}
 
-	if err := c.Bind(&user); err != nil {
-		errs.HandleError(c, err)
-		return
-	}
+// 	if err := c.Bind(&user); err != nil {
+// 		handleError(c, err)
+// 		return
+// 	}
 
-	result, err := h.userCon.NewUser(user)
-	if err != nil {
-		errs.HandleError(c, err)
-		return
-	}
+// 	result, err := h.userService.NewUser(user)
+// 	if err != nil {
+// 		handleError(c, err)
+// 		return
+// 	}
 
-	c.JSON(http.StatusCreated, result)
-}
+// 	c.JSON(http.StatusCreated, result)
+// }
