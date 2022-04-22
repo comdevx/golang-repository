@@ -1,4 +1,4 @@
-package controller_test
+package handler_test
 
 import (
 	"encoding/json"
@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
-	"project/controller"
+	"project/handler"
 	"project/service"
 	"testing"
 
@@ -34,10 +34,10 @@ func TestGetUserAll(t *testing.T) {
 		userService := service.NewUserServiceMock()
 		userService.On("GetUsers").Return(expected, nil)
 
-		userController := controller.NewUserController(userService)
+		userHandler := handler.NewUserHandler(userService)
 
 		app := gin.New()
-		app.GET("/users", userController.GetUsers)
+		app.GET("/users", userHandler.GetUsers)
 
 		req := httptest.NewRequest(http.MethodGet, "/users", nil)
 
@@ -70,15 +70,15 @@ func TestGetUser(t *testing.T) {
 
 		//Arrange
 		id := "626145c5161badf80e0e676f"
-		expected := controller.ErrorResponse{Code: 404, Message: "user not found"}
+		expected := handler.ErrorResponse{Code: 404, Message: "user not found"}
 
 		userService := service.NewUserServiceMock()
 		userService.On("GetUser", id).Return(&service.UserResponse{}, errors.New("user not found"))
 
-		userController := controller.NewUserController(userService)
+		userHandler := handler.NewUserHandler(userService)
 
 		app := gin.New()
-		app.GET("/users/:user_id", userController.GetUser)
+		app.GET("/users/:user_id", userHandler.GetUser)
 
 		req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/users/%s", id), nil)
 
@@ -103,10 +103,10 @@ func TestGetUser(t *testing.T) {
 		userService := service.NewUserServiceMock()
 		userService.On("GetUser", id).Return(&list[0], nil)
 
-		userController := controller.NewUserController(userService)
+		userHandler := handler.NewUserHandler(userService)
 
 		app := gin.New()
-		app.GET("/users/:user_id", userController.GetUser)
+		app.GET("/users/:user_id", userHandler.GetUser)
 
 		req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/users/%s", id), nil)
 

@@ -1,4 +1,4 @@
-package controller
+package handler
 
 import (
 	"net/http"
@@ -7,15 +7,15 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type userController struct {
+type userHandler struct {
 	userService service.UserService
 }
 
-func NewUserController(userService service.UserService) userController {
-	return userController{userService: userService}
+func NewUserHandler(userService service.UserService) userHandler {
+	return userHandler{userService: userService}
 }
 
-func (h userController) GetUsers(c *gin.Context) {
+func (h userHandler) GetUsers(c *gin.Context) {
 
 	users, err := h.userService.GetUsers()
 	if err != nil {
@@ -26,7 +26,7 @@ func (h userController) GetUsers(c *gin.Context) {
 	c.JSON(http.StatusOK, users)
 }
 
-func (h userController) GetUser(c *gin.Context) {
+func (h userHandler) GetUser(c *gin.Context) {
 
 	id := c.Param("user_id")
 
@@ -39,7 +39,7 @@ func (h userController) GetUser(c *gin.Context) {
 	c.JSON(http.StatusOK, users)
 }
 
-// func (h userController) NewUser(c *gin.Context) {
+// func (h userHandler) NewUser(c *gin.Context) {
 
 // 	user := service.NewUserRequest{}
 
