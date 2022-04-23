@@ -19,8 +19,6 @@ func main() {
 	db := initDatabase()
 
 	userRepository := repository.NewUserRepositoryDB(db)
-	userRepositoryMock := repository.NewUserRepositoryMock()
-	_ = userRepositoryMock
 	userService := service.NewUserService(userRepository)
 	userHandler := handler.NewUserHandler(userService)
 

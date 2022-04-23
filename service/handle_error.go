@@ -13,21 +13,21 @@ func (e AppError) Error() string {
 	return e.Message
 }
 
-func errNotFoundError(message string) error {
+func ErrNotFoundError(message string) error {
 	return AppError{
 		Code:    http.StatusNotFound,
 		Message: message,
 	}
 }
 
-func errServerError() error {
+func ErrServerError() error {
 	return AppError{
 		Code:    http.StatusInternalServerError,
 		Message: "unexpected error",
 	}
 }
 
-func errValidationError(message string) error {
+func ErrValidationError(message string) error {
 	return AppError{
 		Code:    http.StatusUnprocessableEntity,
 		Message: message,

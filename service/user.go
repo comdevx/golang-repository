@@ -43,7 +43,7 @@ func (s userService) GetUsers() ([]UserResponse, error) {
 	users, err := s.userRepo.GetAll()
 	if err != nil {
 		logs.Error(err)
-		return nil, errServerError()
+		return nil, ErrServerError()
 	}
 
 	userResponses := []UserResponse{}
@@ -63,7 +63,7 @@ func (s userService) GetUser(id string) (*UserResponse, error) {
 	user, err := s.userRepo.GetByID(id)
 	if err != nil {
 		logs.Error(err)
-		return nil, errNotFoundError("user not found")
+		return nil, ErrNotFoundError("user not found")
 	}
 
 	UserResponse := (*UserResponse)(unsafe.Pointer(user))
@@ -74,11 +74,11 @@ func (s userService) GetUser(id string) (*UserResponse, error) {
 func (s userService) NewUser(body NewUserRequest) (*UserResponse, error) {
 
 	if len(body.Username) < 4 {
-		return nil, errValidationError("character at least 4")
+		return nil, ErrValidationError("character at least 4")
 	}
 
 	if len(body.Password) < 6 {
-		return nil, errValidationError("character at least 6")
+		return nil, ErrValidationError("character at least 6")
 	}
 
 	user := repository.User{
@@ -90,7 +90,7 @@ func (s userService) NewUser(body NewUserRequest) (*UserResponse, error) {
 	newUser, err := s.userRepo.Create(user)
 	if err != nil {
 		logs.Error(err)
-		return nil, errServerError()
+		return nil, ErrServerError()
 	}
 
 	UserResponse := (*UserResponse)(unsafe.Pointer(newUser))
