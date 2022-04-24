@@ -17,6 +17,7 @@ func handleError(c *gin.Context, err error) {
 	case service.AppError:
 		c.AbortWithStatusJSON(e.Code, ErrorResponse{Code: e.Code, Message: e.Message})
 	case error:
-		c.AbortWithStatusJSON(http.StatusNotFound, ErrorResponse{Code: http.StatusNotFound, Message: e.Error()})
+		status := http.StatusBadRequest
+		c.AbortWithStatusJSON(status, ErrorResponse{Code: status, Message: e.Error()})
 	}
 }

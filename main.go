@@ -26,7 +26,7 @@ func main() {
 
 	router.GET("/users", userHandler.GetUsers)
 	router.GET("/users/:user_id", userHandler.GetUser)
-	// router.POST("/users", userHandler.NewUser)
+	router.POST("/users", userHandler.NewUser)
 
 	logs.Info("Started port 3000")
 	router.Run(":3000")

@@ -21,3 +21,8 @@ func (m *UserServiceMock) GetUser(id string) (*UserResponse, error) {
 	args := m.Called(id)
 	return args.Get(0).(*UserResponse), args.Error(1)
 }
+
+func (m *UserServiceMock) NewUser(body NewUserRequest) (*UserResponse, error) {
+	args := m.Called(body)
+	return args.Get(0).(*UserResponse), args.Error(1)
+}
