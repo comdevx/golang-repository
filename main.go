@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"gorm.io/driver/mysql"
+	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
@@ -22,7 +22,6 @@ func main() {
 	userHandler := handler.NewUserHandler(userService)
 
 	router := gin.Default()
-
 	router.GET("/users", userHandler.GetUsers)
 	router.GET("/users/:user_id", userHandler.GetUser)
 	router.POST("/users", userHandler.NewUser)
@@ -43,8 +42,8 @@ func initTimeZone() {
 
 func initDatabase() *gorm.DB {
 
-	dsn := "gorm:gorm@tcp(localhost:9910)/gorm?charset=utf8&parseTime=True&loc=Local"
-	db, err := gorm.Open(mysql.Open(dsn))
+	// dsn := "gorm:gorm@tcp(localhost:9910)/gorm?charset=utf8&parseTime=True&loc=Local"
+	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
 	if err != nil {
 		logs.Error(err)
 		panic(err)

@@ -28,7 +28,7 @@ package service
 // 	userResponses := []UserResponse{}
 // 	for _, user := range users {
 // 		userResponse := UserResponse{
-// 			UserID:   user.UserID,
+// 			ID:   user.ID,
 // 			Username: user.Username,
 // 			Password: user.Password,
 // 			Profile:  Profile(user.Profile),
@@ -63,7 +63,7 @@ package service
 // 	}
 
 // 	user := repository.User{
-// 		UserID:   primitive.NewObjectID(),
+// 		ID:   primitive.NewObjectID(),
 // 		Username: body.Username,
 // 		Password: body.Password,
 // 	}

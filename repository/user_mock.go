@@ -10,9 +10,9 @@ type userRepositoryMock struct {
 
 func NewUserRepositoryMock() userRepositoryMock {
 	users := []User{
-		{UserID: 1, Username: "test1", Password: "pass1", Verified: false, Suspended: false},
-		{UserID: 2, Username: "test2", Password: "pass2", Verified: false, Suspended: false},
-		{UserID: 3, Username: "test3", Password: "pass3", Verified: false, Suspended: false},
+		{ID: 1, Username: "test1", Password: "pass1", Verified: false, Suspended: false},
+		{ID: 2, Username: "test2", Password: "pass2", Verified: false, Suspended: false},
+		{ID: 3, Username: "test3", Password: "pass3", Verified: false, Suspended: false},
 	}
 
 	return userRepositoryMock{users: users}
@@ -25,7 +25,7 @@ func (r *userRepositoryMock) GetAll() ([]User, error) {
 func (r *userRepositoryMock) GetByID(id int) (*User, error) {
 
 	for _, user := range r.users {
-		if user.UserID == id {
+		if user.ID == id {
 			return &user, nil
 		}
 	}

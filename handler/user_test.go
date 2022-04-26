@@ -15,13 +15,16 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var list = []service.UserResponse{}
+var list = service.UserListResponse{}
 
 func init() {
-	list = []service.UserResponse{
-		{UserID: 1, Username: "test1", Password: "test1", Verified: true, Suspended: false},
-		{UserID: 2, Username: "test2", Password: "test2", Verified: true, Suspended: false},
-		{UserID: 3, Username: "test3", Password: "test3", Verified: true, Suspended: false},
+	list = service.UserListResponse{
+		List: []service.UserResponse{
+			{ID: 1, Username: "test1", Password: "test1", Verified: true, Suspended: false},
+			{ID: 1, Username: "test2", Password: "test2", Verified: true, Suspended: false},
+			{ID: 1, Username: "test3", Password: "test3", Verified: true, Suspended: false},
+		},
+		Total: 3,
 	}
 }
 
@@ -30,14 +33,16 @@ func TestGetUserAll(t *testing.T) {
 	t.Run("error server", func(t *testing.T) {
 
 		//Arrange
-		var response []service.UserResponse
+		page := 1
+		limit := 10
+		var response service.UserListResponse
 		expected := service.AppError{
 			Code:    http.StatusInternalServerError,
 			Message: "unexpected error",
 		}
 
 		userService := &service.UserServiceMock{}
-		userService.On("GetUsers").Return(response, service.ErrServerError())
+		userService.On("GetUsers", page, limit).Return(response, service.ErrServerError())
 
 		userHandler := handler.NewUserHandler(userService)
 
@@ -45,7 +50,7 @@ func TestGetUserAll(t *testing.T) {
 		app.GET("/users", userHandler.GetUsers)
 
 		//Act
-		req := httptest.NewRequest(http.MethodGet, "/users", nil)
+		req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/users?page=%v&limit=%v", page, limit), nil)
 		res := httptest.NewRecorder()
 		app.ServeHTTP(res, req)
 		defer res.Result().Body.Close()
@@ -60,10 +65,12 @@ func TestGetUserAll(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 
 		//Arrange
+		page := 1
+		limit := 10
 		expected := list
 
 		userService := &service.UserServiceMock{}
-		userService.On("GetUsers").Return(expected, nil)
+		userService.On("GetUsers", page, limit).Return(expected, nil)
 
 		userHandler := handler.NewUserHandler(userService)
 
@@ -71,7 +78,7 @@ func TestGetUserAll(t *testing.T) {
 		app.GET("/users", userHandler.GetUsers)
 
 		//Act
-		req := httptest.NewRequest(http.MethodGet, "/users", nil)
+		req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/users?page=%v&limit=%v", page, limit), nil)
 		res := httptest.NewRecorder()
 		app.ServeHTTP(res, req)
 		defer res.Result().Body.Close()
@@ -97,7 +104,7 @@ func TestGetUser(t *testing.T) {
 		}
 
 		userService := &service.UserServiceMock{}
-		userService.On("GetUser", id).Return(&list[0], service.ErrServerError())
+		userService.On("GetUser", id).Return(&list.List[0], service.ErrServerError())
 
 		userHandler := handler.NewUserHandler(userService)
 		app := gin.New()
@@ -146,7 +153,7 @@ func TestGetUser(t *testing.T) {
 
 		//Arrange
 		id := 1
-		expected := list[0]
+		expected := list.List[0]
 
 		userService := &service.UserServiceMock{}
 		userService.On("GetUser", id).Return(&expected, nil)
@@ -179,7 +186,7 @@ func TestCreateUser(t *testing.T) {
 			Password: "passtest",
 		}
 		response := service.UserResponse{
-			UserID:    1,
+			ID:        1,
 			Username:  "test",
 			Password:  "passtest",
 			Verified:  false,
@@ -221,7 +228,7 @@ func TestCreateUser(t *testing.T) {
 			Password: "123456",
 		}
 		response := service.UserResponse{
-			UserID:    1,
+			ID:        1,
 			Username:  "test",
 			Password:  "passtest",
 			Verified:  false,
@@ -264,7 +271,7 @@ func TestCreateUser(t *testing.T) {
 			Password: "12345",
 		}
 		response := service.UserResponse{
-			UserID:    1,
+			ID:        1,
 			Username:  "test",
 			Password:  "passtest",
 			Verified:  false,
@@ -339,7 +346,7 @@ func TestCreateUser(t *testing.T) {
 			Password: "passtest",
 		}
 		expected := service.UserResponse{
-			UserID:    1,
+			ID:        1,
 			Username:  "test",
 			Password:  "passtest",
 			Verified:  false,

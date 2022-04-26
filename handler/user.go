@@ -18,7 +18,12 @@ func NewUserHandler(userService service.UserService) userHandler {
 
 func (h userHandler) GetUsers(c *gin.Context) {
 
-	users, err := h.userService.GetUsers()
+	page := c.Query("page")
+	limit := c.Query("limit")
+	pageToInt, _ := strconv.Atoi(page)
+	limitToInt, _ := strconv.Atoi(limit)
+
+	users, err := h.userService.GetUsers(pageToInt, limitToInt)
 	if err != nil {
 		handleError(c, err)
 		return

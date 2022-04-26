@@ -7,7 +7,7 @@ import (
 )
 
 type NewUserRequest struct {
-	UserID    int    `gorm="primaryKey"`
+	ID        int    `gorm="primaryKey"`
 	Username  string `json:"username"`
 	Password  string `json:"password"`
 	Verified  bool   `json:"verified"`
@@ -15,15 +15,20 @@ type NewUserRequest struct {
 }
 
 type UserResponse struct {
-	UserID    int    `gorm="primaryKey"`
+	ID        int    `gorm="primaryKey"`
 	Username  string `json:"username"`
 	Password  string `json:"password"`
 	Verified  bool   `json:"verified"`
 	Suspended bool   `json:"suspended"`
 }
 
+type UserListResponse struct {
+	List  []UserResponse `json:"list"`
+	Total int            `json:"total"`
+}
+
 type UserService interface {
-	GetUsers() ([]UserResponse, error)
+	GetUsers(page, limit int) (UserListResponse, error)
 	GetUser(id int) (*UserResponse, error)
 	NewUser(NewUserRequest) (*UserResponse, error)
 }
@@ -36,23 +41,28 @@ func NewUserService(userRepo repository.UserRepository) userService {
 	return userService{userRepo: userRepo}
 }
 
-func (s userService) GetUsers() ([]UserResponse, error) {
+func (s userService) GetUsers(page, limit int) (UserListResponse, error) {
 
-	users, err := s.userRepo.GetAll()
+	page--
+
+	users, err := s.userRepo.GetAll(page*limit, limit)
 	if err != nil {
 		logs.Error(err)
-		return nil, ErrServerError()
+		return UserListResponse{}, ErrServerError()
 	}
 
-	userResponses := []UserResponse{}
-	for _, user := range users {
+	userResponses := UserListResponse{}
+	for _, user := range users.List {
 		userResponse := UserResponse{
-			UserID:   user.UserID,
+			ID:       user.ID,
 			Username: user.Username,
 			Password: user.Password,
 		}
-		userResponses = append(userResponses, userResponse)
+		userResponses.List = append(userResponses.List, userResponse)
 	}
+
+	// userResponses.List = users.List
+	userResponses.Total = users.Total
 
 	return userResponses, nil
 }
