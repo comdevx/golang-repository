@@ -2,8 +2,6 @@ package repository
 
 import (
 	"errors"
-
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type userRepositoryMock struct {
@@ -12,9 +10,9 @@ type userRepositoryMock struct {
 
 func NewUserRepositoryMock() userRepositoryMock {
 	users := []User{
-		{UserID: primitive.NewObjectID(), Username: "test1", Password: "pass1", Verified: false, Suspended: false},
-		{UserID: primitive.NewObjectID(), Username: "test2", Password: "pass2", Verified: false, Suspended: false},
-		{UserID: primitive.NewObjectID(), Username: "test3", Password: "pass3", Verified: false, Suspended: false},
+		{UserID: 1, Username: "test1", Password: "pass1", Verified: false, Suspended: false},
+		{UserID: 2, Username: "test2", Password: "pass2", Verified: false, Suspended: false},
+		{UserID: 3, Username: "test3", Password: "pass3", Verified: false, Suspended: false},
 	}
 
 	return userRepositoryMock{users: users}
@@ -24,11 +22,10 @@ func (r *userRepositoryMock) GetAll() ([]User, error) {
 	return r.users, nil
 }
 
-func (r *userRepositoryMock) GetByID(id string) (*User, error) {
+func (r *userRepositoryMock) GetByID(id int) (*User, error) {
 
-	convID, _ := primitive.ObjectIDFromHex(id)
 	for _, user := range r.users {
-		if user.UserID == convID {
+		if user.UserID == id {
 			return &user, nil
 		}
 	}
@@ -37,8 +34,5 @@ func (r *userRepositoryMock) GetByID(id string) (*User, error) {
 }
 
 func (r *userRepositoryMock) Create(user User) (*User, error) {
-
-	user.UserID = primitive.NewObjectID()
-
 	return &user, nil
 }

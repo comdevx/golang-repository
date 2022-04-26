@@ -1,19 +1,15 @@
 package repository
 
-import (
-	"go.mongodb.org/mongo-driver/bson/primitive"
-)
-
 type User struct {
-	UserID    primitive.ObjectID `bson:"_id" json:"id"`
-	Username  string             `json:"username"`
-	Password  string             `json:"password"`
-	Verified  bool               `json:"verified"`
-	Suspended bool               `json:"suspended"`
+	UserID    int    `json:"id" gorm:"primaryKey"`
+	Username  string `json:"username"`
+	Password  string `json:"password"`
+	Verified  bool   `json:"verified"`
+	Suspended bool   `json:"suspended"`
 }
 
 type UserRepository interface {
 	GetAll() ([]User, error)
-	GetByID(id string) (*User, error)
+	GetByID(id int) (*User, error)
 	Create(user User) (*User, error)
 }

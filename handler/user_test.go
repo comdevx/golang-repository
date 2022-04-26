@@ -13,19 +13,15 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
-	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 var list = []service.UserResponse{}
 
 func init() {
-	id1, _ := primitive.ObjectIDFromHex("626145c5161badf80e0e676f")
-	id2, _ := primitive.ObjectIDFromHex("626145cc0edb96a4c9198962")
-	id3, _ := primitive.ObjectIDFromHex("626145d3abbe3ccaafd5e2bd")
 	list = []service.UserResponse{
-		{UserID: id1, Username: "test1", Password: "test1", Verified: true, Suspended: false},
-		{UserID: id2, Username: "test2", Password: "test2", Verified: true, Suspended: false},
-		{UserID: id3, Username: "test3", Password: "test3", Verified: true, Suspended: false},
+		{UserID: 1, Username: "test1", Password: "test1", Verified: true, Suspended: false},
+		{UserID: 2, Username: "test2", Password: "test2", Verified: true, Suspended: false},
+		{UserID: 3, Username: "test3", Password: "test3", Verified: true, Suspended: false},
 	}
 }
 
@@ -94,7 +90,7 @@ func TestGetUser(t *testing.T) {
 	t.Run("error server", func(t *testing.T) {
 
 		//Arrange
-		id := "626145c5161badf80e0e676f"
+		id := 1
 		expected := service.AppError{
 			Code:    http.StatusInternalServerError,
 			Message: "unexpected error",
@@ -108,7 +104,7 @@ func TestGetUser(t *testing.T) {
 		app.GET("/users/:user_id", userHandler.GetUser)
 
 		//Act
-		req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/users/%s", id), nil)
+		req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/users/%v", id), nil)
 		res := httptest.NewRecorder()
 		app.ServeHTTP(res, req)
 		defer res.Result().Body.Close()
@@ -123,7 +119,7 @@ func TestGetUser(t *testing.T) {
 	t.Run("error no id", func(t *testing.T) {
 
 		//Arrange
-		id := "626145c5161badf80e0e676f"
+		id := 1
 		expected := handler.ErrorResponse{Code: 400, Message: "User not found"}
 
 		userService := &service.UserServiceMock{}
@@ -134,7 +130,7 @@ func TestGetUser(t *testing.T) {
 		app.GET("/users/:user_id", userHandler.GetUser)
 
 		//Act
-		req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/users/%s", id), nil)
+		req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/users/%v", id), nil)
 		res := httptest.NewRecorder()
 		app.ServeHTTP(res, req)
 		defer res.Result().Body.Close()
@@ -149,7 +145,7 @@ func TestGetUser(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 
 		//Arrange
-		id := "626145c5161badf80e0e676f"
+		id := 1
 		expected := list[0]
 
 		userService := &service.UserServiceMock{}
@@ -160,7 +156,7 @@ func TestGetUser(t *testing.T) {
 		app.GET("/users/:user_id", userHandler.GetUser)
 
 		//Act
-		req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/users/%s", id), nil)
+		req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/users/%v", id), nil)
 		res := httptest.NewRecorder()
 		app.ServeHTTP(res, req)
 		defer res.Result().Body.Close()
@@ -183,7 +179,7 @@ func TestCreateUser(t *testing.T) {
 			Password: "passtest",
 		}
 		response := service.UserResponse{
-			UserID:    primitive.ObjectID{000000000000000000000011},
+			UserID:    1,
 			Username:  "test",
 			Password:  "passtest",
 			Verified:  false,
@@ -225,7 +221,7 @@ func TestCreateUser(t *testing.T) {
 			Password: "123456",
 		}
 		response := service.UserResponse{
-			UserID:    primitive.ObjectID{000000000000000000000011},
+			UserID:    1,
 			Username:  "test",
 			Password:  "passtest",
 			Verified:  false,
@@ -268,7 +264,7 @@ func TestCreateUser(t *testing.T) {
 			Password: "12345",
 		}
 		response := service.UserResponse{
-			UserID:    primitive.ObjectID{000000000000000000000011},
+			UserID:    1,
 			Username:  "test",
 			Password:  "passtest",
 			Verified:  false,
@@ -343,7 +339,7 @@ func TestCreateUser(t *testing.T) {
 			Password: "passtest",
 		}
 		expected := service.UserResponse{
-			UserID:    primitive.ObjectID{000000000000000000000011},
+			UserID:    1,
 			Username:  "test",
 			Password:  "passtest",
 			Verified:  false,

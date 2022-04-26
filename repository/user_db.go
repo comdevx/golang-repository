@@ -1,62 +1,38 @@
 package repository
 
 import (
-	"context"
-
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/bson/primitive"
-	"go.mongodb.org/mongo-driver/mongo"
+	"gorm.io/gorm"
 )
 
 type userRepositoryDB struct {
-	collection *mongo.Collection
+	db *gorm.DB
 }
 
-func NewUserRepositoryDB(db *mongo.Database) userRepositoryDB {
-	collection := db.Collection("users")
+func NewUserRepositoryDB(db *gorm.DB) userRepositoryDB {
 	return userRepositoryDB{
-		collection: collection,
+		db: db,
 	}
 }
 
 func (r userRepositoryDB) GetAll() ([]User, error) {
 
 	var result []User
-	ctx := context.Background()
-	cursor, err := r.collection.Find(ctx, bson.M{})
-	if err != nil {
-		return nil, err
-	}
-
-	defer cursor.Close(ctx)
-
-	if err := cursor.All(ctx, &result); err != nil {
-		return nil, err
-	}
+	r.db.Find(&User{}).Scan(&result)
 
 	return result, nil
 }
 
-func (r userRepositoryDB) GetByID(id string) (*User, error) {
+func (r userRepositoryDB) GetByID(id int) (*User, error) {
 
 	var result User
-	ctx := context.Background()
-	ConvID, _ := primitive.ObjectIDFromHex(id)
-	err := r.collection.FindOne(ctx, bson.M{"_id": ConvID}).Decode(&result)
-	if err != nil {
-		return nil, err
-	}
+	r.db.Find(&User{}, "id = ?", id).Scan(&result)
 
 	return &result, nil
 }
 
 func (r userRepositoryDB) Create(user User) (*User, error) {
 
-	ctx := context.Background()
-	_, err := r.collection.InsertOne(ctx, user)
-	if err != nil {
-		return nil, err
-	}
+	r.db.Create(&user)
 
 	return &user, nil
 }

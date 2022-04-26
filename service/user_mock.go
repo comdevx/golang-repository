@@ -17,7 +17,7 @@ func (m *UserServiceMock) GetUsers() ([]UserResponse, error) {
 	return args.Get(0).([]UserResponse), args.Error(1)
 }
 
-func (m *UserServiceMock) GetUser(id string) (*UserResponse, error) {
+func (m *UserServiceMock) GetUser(id int) (*UserResponse, error) {
 	args := m.Called(id)
 	return args.Get(0).(*UserResponse), args.Error(1)
 }

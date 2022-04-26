@@ -3,6 +3,7 @@ package handler
 import (
 	"net/http"
 	service "project/service"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
@@ -29,8 +30,8 @@ func (h userHandler) GetUsers(c *gin.Context) {
 func (h userHandler) GetUser(c *gin.Context) {
 
 	id := c.Param("user_id")
-
-	users, err := h.userService.GetUser(id)
+	toInt, _ := strconv.Atoi(id)
+	users, err := h.userService.GetUser(toInt)
 	if err != nil {
 		handleError(c, err)
 		return

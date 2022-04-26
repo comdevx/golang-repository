@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"project/handler"
 	logs "project/helper"
 	"project/repository"
@@ -9,8 +8,8 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
 
 func main() {
@@ -42,18 +41,16 @@ func initTimeZone() {
 	time.Local = ict
 }
 
-func initDatabase() *mongo.Database {
+func initDatabase() *gorm.DB {
 
-	ctx := context.Background()
-	client, err := mongo.Connect(ctx, options.Client().ApplyURI("mongodb+srv://tongtest:tongtestgolang@cluster0.yc2a7.mongodb.net/myFirstDatabase?retryWrites=true&w=majority"))
+	dsn := "gorm:gorm@tcp(localhost:9910)/gorm?charset=utf8&parseTime=True&loc=Local"
+	db, err := gorm.Open(mysql.Open(dsn))
 	if err != nil {
 		logs.Error(err)
 		panic(err)
 	}
 
 	logs.Info("Database is connected")
-
-	db := client.Database("golang")
 
 	return db
 }
