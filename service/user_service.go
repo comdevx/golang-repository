@@ -1,80 +1,69 @@
 package service
 
-// import (
-// 	logs "project/helper"
-// 	errs "project/helper/errs"
-// 	"project/repository"
-// 	"unsafe"
+import (
+	logs "project/helper"
+	"project/repository"
+	"unsafe"
+)
 
-// 	"go.mongodb.org/mongo-driver/bson/primitive"
-// )
+type userService struct {
+	userRepo repository.UserRepository
+}
 
-// type userService struct {
-// 	userRepo repository.UserRepository
-// }
+func NewUserService(userRepo repository.UserRepository) userService {
+	return userService{userRepo: userRepo}
+}
 
-// func NewUserService(userRepo repository.UserRepository) userService {
-// 	return userService{userRepo: userRepo}
-// }
+func (s userService) GetUsers(page, limit int) (UserListResponse, error) {
 
-// func (s userService) GetUsers() ([]UserResponse, error) {
+	page--
 
-// 	users, err := s.userRepo.GetAll()
-// 	if err != nil {
-// 		logs.Error(err)
-// 		return nil, errs.NewNotFoundError("user not found")
-// 	}
+	users, err := s.userRepo.GetAll(page*limit, limit)
+	if err != nil {
+		logs.Error(err)
+		return UserListResponse{}, ErrServerError()
+	}
 
-// 	userResponses := []UserResponse{}
-// 	for _, user := range users {
-// 		userResponse := UserResponse{
-// 			ID:   user.ID,
-// 			Username: user.Username,
-// 			Password: user.Password,
-// 			Profile:  Profile(user.Profile),
-// 		}
-// 		userResponses = append(userResponses, userResponse)
-// 	}
+	userResponses := UserListResponse{}
+	for _, user := range users.List {
+		userResponse := UserResponse{
+			ID:       user.ID,
+			Username: user.Username,
+			Password: user.Password,
+		}
+		userResponses.List = append(userResponses.List, userResponse)
+	}
+	userResponses.Total = users.Total
 
-// 	return userResponses, nil
-// }
+	return userResponses, nil
+}
 
-// func (s userService) GetUser(id string) (*UserResponse, error) {
+func (s userService) GetUser(id int) (*UserResponse, error) {
+	user, err := s.userRepo.GetByID(id)
+	if err != nil {
+		logs.Error(err)
+		return nil, ErrNotFoundError("user not found")
+	}
 
-// 	user, err := s.userRepo.GetByID(id)
-// 	if err != nil {
-// 		logs.Error(err)
-// 		return nil, errs.NewNotFoundError("user not found")
-// 	}
+	UserResponse := (*UserResponse)(unsafe.Pointer(user))
 
-// 	UserResponse := (*UserResponse)(unsafe.Pointer(user))
+	return UserResponse, nil
+}
 
-// 	return UserResponse, nil
-// }
+func (s userService) NewUser(body NewUserRequest) (*UserResponse, error) {
 
-// func (s userService) NewUser(body NewUserRequest) (*UserResponse, error) {
+	user := repository.User{
+		Username: body.Username,
+		Password: body.Password,
+	}
 
-// 	if len(body.Username) < 4 {
-// 		return nil, errs.NewValidationError("character at least 4")
-// 	}
+	newUser, err := s.userRepo.Create(user)
+	if err != nil {
+		logs.Error(err)
+		return nil, ErrServerError()
+	}
 
-// 	if len(body.Password) < 6 {
-// 		return nil, errs.NewValidationError("character at least 6")
-// 	}
+	UserResponse := (*UserResponse)(unsafe.Pointer(newUser))
 
-// 	user := repository.User{
-// 		ID:   primitive.NewObjectID(),
-// 		Username: body.Username,
-// 		Password: body.Password,
-// 	}
-
-// 	newUser, err := s.userRepo.Create(user)
-// 	if err != nil {
-// 		logs.Error(err)
-// 		return nil, errs.NewServerError()
-// 	}
-
-// 	UserResponse := (*UserResponse)(unsafe.Pointer(newUser))
-
-// 	return UserResponse, nil
-// }
+	return UserResponse, nil
+}
