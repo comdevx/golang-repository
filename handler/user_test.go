@@ -21,8 +21,8 @@ func init() {
 	list = service.UserListResponse{
 		List: []service.UserResponse{
 			{ID: 1, Username: "test1", Password: "test1", Verified: true, Suspended: false},
-			{ID: 1, Username: "test2", Password: "test2", Verified: true, Suspended: false},
-			{ID: 1, Username: "test3", Password: "test3", Verified: true, Suspended: false},
+			{ID: 2, Username: "test2", Password: "test2", Verified: true, Suspended: false},
+			{ID: 3, Username: "test3", Password: "test3", Verified: true, Suspended: false},
 		},
 		Total: 3,
 	}
