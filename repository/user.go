@@ -1,16 +1,16 @@
 package repository
 
 type User struct {
-	ID        int    `json:"id" gorm:"primaryKey"`
-	Username  string `json:"username"`
-	Password  string `json:"password"`
-	Verified  bool   `json:"verified"`
-	Suspended bool   `json:"suspended"`
+	ID        int `gorm:"primaryKey"`
+	Username  string
+	Password  string
+	Verified  bool
+	Suspended bool
 }
 
 type Users struct {
-	List  []User `json:"list"`
-	Total int    `json:"total"`
+	List  []User
+	Total int
 }
 
 type UserRepository interface {

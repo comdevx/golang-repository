@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"errors"
 	"net/http"
 	service "project/service"
 	"strconv"
@@ -22,6 +23,16 @@ func (h userHandler) GetUsers(c *gin.Context) {
 	limit := c.Query("limit")
 	pageToInt, _ := strconv.Atoi(page)
 	limitToInt, _ := strconv.Atoi(limit)
+
+	if pageToInt < 1 {
+		handleError(c, errors.New("Page value less than 1"))
+		return
+	}
+
+	if limitToInt < 1 || limitToInt > 100 {
+		handleError(c, errors.New("Limit values less than 1 or greater than 100"))
+		return
+	}
 
 	users, err := h.userService.GetUsers(pageToInt, limitToInt)
 	if err != nil {

@@ -43,7 +43,7 @@ func initTimeZone() {
 func initDatabase() *gorm.DB {
 
 	// dsn := "gorm:gorm@tcp(localhost:9910)/gorm?charset=utf8&parseTime=True&loc=Local"
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open("./test.db"), &gorm.Config{})
 	if err != nil {
 		logs.Error(err)
 		panic(err)

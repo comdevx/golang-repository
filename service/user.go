@@ -1,7 +1,7 @@
 package service
 
 type NewUserRequest struct {
-	ID        int    `gorm="primaryKey"`
+	ID        int    `json:"id"`
 	Username  string `json:"username"`
 	Password  string `json:"password"`
 	Verified  bool   `json:"verified"`
@@ -9,7 +9,7 @@ type NewUserRequest struct {
 }
 
 type UserResponse struct {
-	ID        int    `gorm="primaryKey"`
+	ID        int    `json:"id"`
 	Username  string `json:"username"`
 	Password  string `json:"password"`
 	Verified  bool   `json:"verified"`

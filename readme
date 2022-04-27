@@ -1,0 +1,18 @@
+# Golang Repository
+
+Golang Gin original for me
+
+- Golang
+- Gin Framework
+- Gorm package (SQL)
+- Sqlite
+- Testtify Unit test
+
+### Url for test
+
+| METHOD | URL | BODY |
+| :---: | :---: | :---: |
+| GET | http://localhost:3000/users?page=1&limit=10 | - |
+| GET | http://localhost:3000/users/1 | - |
+| POST | http://localhost:3000/users | JSON {"username" : "test", "password" : "test"} |
+
