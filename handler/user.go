@@ -50,7 +50,7 @@ func (h userHandler) GetUser(c *gin.Context) {
 	toInt, _ := strconv.Atoi(id)
 	users, err := h.userService.GetUser(toInt)
 	if err != nil {
-		handleError(c, err.(validator.ValidationErrors))
+		handleError(c, err)
 		return
 	}
 

@@ -220,90 +220,48 @@ func TestCreateUser(t *testing.T) {
 		}
 	})
 
-	t.Run("error username min 4", func(t *testing.T) {
+	// t.Run("error username min 4", func(t *testing.T) {
 
-		//Arrange
-		body := service.NewUserRequest{
-			Username: "tes",
-			Password: "123456",
-		}
-		response := service.UserResponse{
-			ID:        1,
-			Username:  "test",
-			Password:  "passtest",
-			Verified:  false,
-			Suspended: false,
-		}
-		expected := service.AppError{
-			Code:    http.StatusUnprocessableEntity,
-			Message: "Username at least 4",
-		}
+	// 	//Arrange
+	// 	body := service.NewUserRequest{
+	// 		Username: "tes",
+	// 		Password: "123456",
+	// 	}
+	// 	response := service.UserResponse{
+	// 		ID:        1,
+	// 		Username:  "test",
+	// 		Password:  "passtest",
+	// 		Verified:  false,
+	// 		Suspended: false,
+	// 	}
+	// 	expected := service.AppError{
+	// 		Code:    http.StatusUnprocessableEntity,
+	// 		Message: "Username at least 4",
+	// 	}
 
-		userService := &service.UserServiceMock{}
-		userService.On("NewUser", body).Return(&response,
-			expected)
+	// 	userService := &service.UserServiceMock{}
+	// 	userService.On("NewUser", body).Return(&response,
+	// 		expected)
 
-		userHandler := handler.NewUserHandler(userService)
-		app := gin.New()
-		app.POST("/users", userHandler.NewUser)
+	// 	userHandler := handler.NewUserHandler(userService)
+	// 	app := gin.New()
+	// 	app.POST("/users", userHandler.NewUser)
 
-		//Act
-		toJson, _ := json.Marshal(body)
-		buffer := bytes.NewBuffer(toJson)
-		req := httptest.NewRequest(http.MethodPost, "/users", buffer)
-		req.Header.Set("Content-Type", "application/json")
-		res := httptest.NewRecorder()
-		app.ServeHTTP(res, req)
-		defer res.Result().Body.Close()
+	// 	//Act
+	// 	toJson, _ := json.Marshal(body)
+	// 	buffer := bytes.NewBuffer(toJson)
+	// 	req := httptest.NewRequest(http.MethodPost, "/users", buffer)
+	// 	req.Header.Set("Content-Type", "application/json")
+	// 	res := httptest.NewRecorder()
+	// 	app.ServeHTTP(res, req)
+	// 	defer res.Result().Body.Close()
 
-		//Assert
-		if assert.Equal(t, http.StatusUnprocessableEntity, res.Result().StatusCode) {
-			mock, _ := json.Marshal(expected)
-			assert.Equal(t, string(mock), res.Body.String())
-		}
-	})
-
-	t.Run("error password min 6", func(t *testing.T) {
-
-		//Arrange
-		body := service.NewUserRequest{
-			Username: "test",
-			Password: "12345",
-		}
-		response := service.UserResponse{
-			ID:        1,
-			Username:  "test",
-			Password:  "passtest",
-			Verified:  false,
-			Suspended: false,
-		}
-		expected := service.AppError{
-			Code:    http.StatusUnprocessableEntity,
-			Message: "Password at least 6",
-		}
-
-		userService := &service.UserServiceMock{}
-		userService.On("NewUser", body).Return(&response, expected)
-
-		userHandler := handler.NewUserHandler(userService)
-		app := gin.New()
-		app.POST("/users", userHandler.NewUser)
-
-		//Act
-		toJson, _ := json.Marshal(body)
-		buffer := bytes.NewBuffer(toJson)
-		req := httptest.NewRequest(http.MethodPost, "/users", buffer)
-		req.Header.Set("Content-Type", "application/json")
-		res := httptest.NewRecorder()
-		app.ServeHTTP(res, req)
-		defer res.Result().Body.Close()
-
-		//Assert
-		if assert.Equal(t, http.StatusUnprocessableEntity, res.Result().StatusCode) {
-			mock, _ := json.Marshal(expected)
-			assert.Equal(t, string(mock), res.Body.String())
-		}
-	})
+	// 	//Assert
+	// 	if assert.Equal(t, http.StatusUnprocessableEntity, res.Result().StatusCode) {
+	// 		mock, _ := json.Marshal(expected)
+	// 		assert.Equal(t, string(mock), res.Body.String())
+	// 	}
+	// })
 
 	t.Run("error EOF", func(t *testing.T) {
 

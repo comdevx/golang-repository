@@ -5,8 +5,8 @@ import (
 )
 
 type AppError struct {
-	Code    int
-	Message string
+	Code    int    `json:"code"`
+	Message string `json:"message"`
 }
 
 func (e AppError) Error() string {
