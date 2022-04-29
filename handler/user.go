@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/go-playground/validator/v10"
 )
 
 type userHandler struct {
@@ -49,7 +50,7 @@ func (h userHandler) GetUser(c *gin.Context) {
 	toInt, _ := strconv.Atoi(id)
 	users, err := h.userService.GetUser(toInt)
 	if err != nil {
-		handleError(c, err)
+		handleError(c, err.(validator.ValidationErrors))
 		return
 	}
 
@@ -60,18 +61,8 @@ func (h userHandler) NewUser(c *gin.Context) {
 
 	user := service.NewUserRequest{}
 
-	if err := c.Bind(&user); err != nil {
-		handleError(c, err)
-		return
-	}
-
-	if len(user.Username) < 4 {
-		handleError(c, service.ErrValidationError("Username at least 4"))
-		return
-	}
-
-	if len(user.Password) < 6 {
-		handleError(c, service.ErrValidationError("Password at least 6"))
+	if err := c.ShouldBindJSON(&user); err != nil {
+		handleError(c, err.(validator.ValidationErrors))
 		return
 	}
 
