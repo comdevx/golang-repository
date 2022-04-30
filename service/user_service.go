@@ -1,9 +1,12 @@
 package service
 
 import (
+	"errors"
 	logs "project/helper"
 	"project/repository"
 	"unsafe"
+
+	"golang.org/x/crypto/bcrypt"
 )
 
 type userService struct {
@@ -29,7 +32,6 @@ func (s userService) GetUsers(page, limit int) (UserListResponse, error) {
 		userResponse := UserResponse{
 			ID:       user.ID,
 			Username: user.Username,
-			Password: user.Password,
 		}
 		userResponses.List = append(userResponses.List, userResponse)
 	}
@@ -52,9 +54,20 @@ func (s userService) GetUser(id int) (*UserResponse, error) {
 
 func (s userService) NewUser(body NewUserRequest) (*UserResponse, error) {
 
+	checkUser, err := s.userRepo.GetByUser(body.Username)
+	if err != nil {
+		return nil, ErrServerError()
+	}
+
+	if checkUser.Username == body.Username {
+		return nil, errors.New("Username is Exists")
+	}
+
+	encode, _ := bcrypt.GenerateFromPassword([]byte(body.Password), bcrypt.DefaultCost)
+
 	user := repository.User{
 		Username: body.Username,
-		Password: body.Password,
+		Password: string(encode),
 	}
 
 	newUser, err := s.userRepo.Create(user)

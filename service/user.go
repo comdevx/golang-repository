@@ -1,5 +1,10 @@
 package service
 
+type Body struct {
+	Username string `json:"username" biding:"min=4"`
+	Password string `json:"password" biding:"min=6"`
+}
+
 type NewUserRequest struct {
 	ID        int    `json:"id"`
 	Username  string `json:"username" binding:"required,min=4"`
@@ -11,7 +16,7 @@ type NewUserRequest struct {
 type UserResponse struct {
 	ID        int    `json:"id"`
 	Username  string `json:"username"`
-	Password  string `json:"password"`
+	Password  string `json:"-"`
 	Verified  bool   `json:"verified"`
 	Suspended bool   `json:"suspended"`
 }

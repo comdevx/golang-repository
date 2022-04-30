@@ -8,12 +8,13 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
 func main() {
-
+	initData()
 	initTimeZone()
 	db := initDatabase()
 
@@ -21,7 +22,15 @@ func main() {
 	userService := service.NewUserService(userRepository)
 	userHandler := handler.NewUserHandler(userService)
 
+	authenService := service.NewAuthenService(userRepository)
+	authenHandler := handler.NewAuthenHandler(authenService)
+
 	router := gin.Default()
+
+	authen := router.Group("/api/authen")
+	{
+		authen.POST("/login", authenHandler.Login)
+	}
 
 	user := router.Group("/api/users")
 	{
@@ -38,6 +47,7 @@ func initTimeZone() {
 
 	ict, err := time.LoadLocation("Asia/Bangkok")
 	if err != nil {
+		logs.Error(err)
 		panic(err)
 	}
 
@@ -56,4 +66,13 @@ func initDatabase() *gorm.DB {
 	logs.Info("Database is connected")
 
 	return db
+}
+
+func initData() {
+
+	err := godotenv.Load()
+	if err != nil {
+		logs.Error(err)
+		panic("Error loading .env file")
+	}
 }

@@ -54,6 +54,19 @@ func (r userRepositoryDB) GetByID(id int) (*User, error) {
 	return &result, nil
 }
 
+func (r userRepositoryDB) GetByUser(user string) (*User, error) {
+
+	query := r.db.Raw("SELECT * FROM users WHERE username = ? LIMIT 1", user)
+	if query.Error != nil {
+		return nil, query.Error
+	}
+
+	var result User
+	query.Scan(&result)
+
+	return &result, nil
+}
+
 func (r userRepositoryDB) Create(user User) (*User, error) {
 
 	if err := r.db.AutoMigrate(&User{}); err != nil {

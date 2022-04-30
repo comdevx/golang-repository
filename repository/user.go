@@ -13,8 +13,14 @@ type Users struct {
 	Total int
 }
 
+type Body struct {
+	Username string
+	Password string
+}
+
 type UserRepository interface {
 	GetAll(skip, limit int) (Users, error)
 	GetByID(id int) (*User, error)
-	Create(user User) (*User, error)
+	GetByUser(string) (*User, error)
+	Create(User) (*User, error)
 }

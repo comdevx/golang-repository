@@ -12,6 +12,11 @@ type UserServiceMock struct {
 // 	return &userServiceMock{}
 // }
 
+func (m *UserServiceMock) Login(body Body) (*UserResponse, error) {
+	args := m.Called(body)
+	return args.Get(0).(*UserResponse), args.Error(1)
+}
+
 func (m *UserServiceMock) GetUsers(page, limit int) (UserListResponse, error) {
 	args := m.Called(page, limit)
 	return args.Get(0).(UserListResponse), args.Error(1)
