@@ -80,3 +80,13 @@ func (r userRepositoryDB) Create(user User) (*User, error) {
 
 	return &user, nil
 }
+
+func (r userRepositoryDB) UpdatePassword(data UpdatePassword) error {
+
+	query := r.db.Exec("UPDATE users SET password = ? WHERE id = ? AND username = ? RETURNING id, username", data.Password, data.ID, data.Username)
+	if query.Error != nil {
+		return query.Error
+	}
+
+	return nil
+}

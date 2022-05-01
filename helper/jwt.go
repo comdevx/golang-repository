@@ -20,7 +20,7 @@ type SignedDetails struct {
 func GenerateToken(username string, uid int) (string, error) {
 
 	secretKey := os.Getenv("JWT_SECRET")
-	jwtExpire, err := strconv.Atoi(os.Getenv("JWT_EXPIRED_MINUTES"))
+	jwtExpire, err := strconv.Atoi(os.Getenv("JWT_EXPIRE_MINUTES"))
 
 	if err != nil {
 		jwtExpire = 15

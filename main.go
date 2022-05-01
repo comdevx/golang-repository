@@ -3,6 +3,7 @@ package main
 import (
 	"project/handler"
 	logs "project/helper"
+	"project/middleware"
 	"project/repository"
 	"project/service"
 	"time"
@@ -27,16 +28,17 @@ func main() {
 
 	router := gin.Default()
 
-	authen := router.Group("/api/authen")
+	public := router.Group("/api")
 	{
-		authen.POST("/login", authenHandler.Login)
+		public.POST("/login", authenHandler.Login)
+		public.POST("/change_password", authenHandler.ChangePassword)
+		public.POST("/register", userHandler.NewUser)
 	}
 
-	user := router.Group("/api/users")
+	user := router.Group("/api/users", middleware.Authorize)
 	{
 		user.GET("/", userHandler.GetUsers)
 		user.GET("/:user_id", userHandler.GetUser)
-		user.POST("/", userHandler.NewUser)
 	}
 
 	logs.Info("Started port 3000")

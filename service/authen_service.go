@@ -2,10 +2,9 @@ package service
 
 import (
 	"errors"
+	"project/helper"
 	logs "project/helper"
 	"project/repository"
-
-	"golang.org/x/crypto/bcrypt"
 )
 
 type authenService struct {
@@ -24,7 +23,7 @@ func (s authenService) Login(body AuthenBody) (*AuthenResponse, error) {
 		return nil, ErrServerError()
 	}
 
-	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(body.Password))
+	err = helper.ComparePassword(user.Password, body.Password)
 	if err != nil {
 		return nil, errors.New("Password is not matched")
 	}
@@ -42,4 +41,41 @@ func (s authenService) Login(body AuthenBody) (*AuthenResponse, error) {
 	response.Token = token
 
 	return response, nil
+}
+
+func (s authenService) ChangePassword(body PasswordForm) (*PasswordResponse, error) {
+
+	user, err := s.userRepo.GetByUser(body.Username)
+	if err != nil {
+		logs.Error(err)
+		return nil, ErrServerError()
+	}
+
+	err = helper.ComparePassword(user.Password, body.OldPassword)
+	if err != nil {
+		return nil, errors.New("Password is not matched")
+	}
+
+	body.NewPassword, err = helper.Password(body.NewPassword)
+	if err != nil {
+		return nil, err
+	}
+
+	data := repository.UpdatePassword{
+		ID:       user.ID,
+		Username: user.Username,
+		Password: body.NewPassword,
+	}
+
+	err = s.userRepo.UpdatePassword(data)
+	if err != nil {
+		return nil, ErrServerError()
+	}
+
+	result := PasswordResponse{
+		Message: "Changed password success",
+	}
+
+	return &result, nil
+
 }

@@ -2,11 +2,10 @@ package service
 
 import (
 	"errors"
+	"project/helper"
 	logs "project/helper"
 	"project/repository"
 	"unsafe"
-
-	"golang.org/x/crypto/bcrypt"
 )
 
 type userService struct {
@@ -63,7 +62,11 @@ func (s userService) NewUser(body NewUserRequest) (*UserResponse, error) {
 		return nil, errors.New("Username is Exists")
 	}
 
-	encode, _ := bcrypt.GenerateFromPassword([]byte(body.Password), bcrypt.DefaultCost)
+	encode, err := helper.Password(body.Password)
+	if err != nil {
+		logs.Error(err)
+		return nil, ErrServerError()
+	}
 
 	user := repository.User{
 		Username: body.Username,

@@ -33,3 +33,20 @@ func (h AuthHandler) Login(c *gin.Context) {
 
 	c.JSON(http.StatusCreated, result)
 }
+
+func (h AuthHandler) ChangePassword(c *gin.Context) {
+
+	body := service.PasswordForm{}
+
+	if err := c.ShouldBindJSON(&body); err != nil {
+		handleError(c, err.(validator.ValidationErrors))
+	}
+
+	result, err := h.authenService.ChangePassword(body)
+	if err != nil {
+		handleError(c, err)
+		return
+	}
+
+	c.JSON(http.StatusAccepted, result)
+}
