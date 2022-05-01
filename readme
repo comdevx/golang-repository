@@ -11,7 +11,7 @@ Golang Gin original for me
 ### Url for test
 
 | METHOD | URL | BODY | TOKEN |
-| :---: | :---: | :---: |
+| :---: | :---: | :---: | :---: |
 | POST | http://localhost:3000/register | JSON {"username" : "test", "password" : "test"} | - |
 | POST | http://localhost:3000/login | JSON {"username" : "test", "password" : "test"} | - |
 | POST | http://localhost:3000/change_password | JSON {"username" : "test", "old_password" : "test", "new_password" : "test2"} | - |
