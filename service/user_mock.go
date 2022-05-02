@@ -17,7 +17,7 @@ func (m *UserServiceMock) Login(body Body) (*UserResponse, error) {
 	return args.Get(0).(*UserResponse), args.Error(1)
 }
 
-func (m *UserServiceMock) GetUsers(page, limit int) (UserListResponse, error) {
+func (m *UserServiceMock) GetUsers(page, limit string) (UserListResponse, error) {
 	args := m.Called(page, limit)
 	return args.Get(0).(UserListResponse), args.Error(1)
 }

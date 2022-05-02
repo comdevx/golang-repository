@@ -5,6 +5,7 @@ import (
 	"project/helper"
 	logs "project/helper"
 	"project/repository"
+	"strconv"
 	"unsafe"
 )
 
@@ -16,11 +17,27 @@ func NewUserService(userRepo repository.UserRepository) userService {
 	return userService{userRepo: userRepo}
 }
 
-func (s userService) GetUsers(page, limit int) (UserListResponse, error) {
+func (s userService) GetUsers(page, limit string) (UserListResponse, error) {
 
-	page--
+	pageToInt := 0
+	limitToInt := 10
 
-	users, err := s.userRepo.GetAll(page*limit, limit)
+	if page != "" || limit != "" {
+		pageToInt, _ = strconv.Atoi(page)
+		limitToInt, _ = strconv.Atoi(limit)
+
+		if pageToInt < 1 {
+			return UserListResponse{}, errors.New("Page value less than 1")
+		}
+
+		if limitToInt < 1 || limitToInt > 100 {
+			return UserListResponse{}, errors.New("Limit values less than 1 or greater than 100")
+		}
+
+		pageToInt--
+	}
+
+	users, err := s.userRepo.GetAll(pageToInt*limitToInt, limitToInt)
 	if err != nil {
 		logs.Error(err)
 		return UserListResponse{}, ErrServerError()

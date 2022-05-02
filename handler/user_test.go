@@ -33,8 +33,8 @@ func TestGetUserAll(t *testing.T) {
 	t.Run("error server", func(t *testing.T) {
 
 		//Arrange
-		page := 1
-		limit := 10
+		page := "1"
+		limit := "10"
 		var response service.UserListResponse
 		expected := service.AppError{
 			Code:    http.StatusInternalServerError,
@@ -65,8 +65,8 @@ func TestGetUserAll(t *testing.T) {
 	t.Run("success", func(t *testing.T) {
 
 		//Arrange
-		page := 1
-		limit := 10
+		page := "1"
+		limit := "10"
 		expected := list
 
 		userService := &service.UserServiceMock{}

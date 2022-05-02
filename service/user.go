@@ -27,7 +27,7 @@ type UserListResponse struct {
 }
 
 type UserService interface {
-	GetUsers(page, limit int) (UserListResponse, error)
+	GetUsers(page, limit string) (UserListResponse, error)
 	GetUser(id int) (*UserResponse, error)
 	NewUser(NewUserRequest) (*UserResponse, error)
 }
